@@ -1,0 +1,25 @@
+{
+  "name": "pida",
+  "version": "1.0.4",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/gotapi/picojs.git"
+  },
+  "keywords": [
+    "picojs",
+    "js",
+    "javascript",
+    "simple"
+  ],
+  "author": "ms404",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gotapi/picojs/issues"
+  },
+  "homepage": "https://github.com/gotapi/picojs#readme"
+}
