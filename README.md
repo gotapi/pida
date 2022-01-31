@@ -11,6 +11,8 @@ or
 npm install --save pida
 ```
 
+
+
 Example:
 
 ```javascript
@@ -26,6 +28,8 @@ pida.onDomReady(()=>{
     console.dir(pida)
 })
 ```
+
+vite demo project:[https://github.com/gotapi/pida-demo](https://github.com/gotapi/pida-demo)
 
 Pida 一个极简的类似Jquery的Javascript库
 因为Jquery现在已经膨胀到了100K了，有时候做一些特别小的页面，实在没有必要引入这么大一个库，于是我就写了这个pida;
