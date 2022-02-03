@@ -1,6 +1,6 @@
 {
   "name": "pida",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/gotapi/picojs.git"
+    "url": "git+ssh://git@github.com/gotapi/pida.git"
   },
   "keywords": [
     "picojs",
@@ -19,7 +19,7 @@
   "author": "ms404",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gotapi/picojs/issues"
+    "url": "https://github.com/gotapi/pida/issues"
   },
-  "homepage": "https://github.com/gotapi/picojs#readme"
+  "homepage": "https://github.com/gotapi/pida#readme"
 }

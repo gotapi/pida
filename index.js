@@ -610,6 +610,27 @@ const _pida = (function () {
             }, 10);
         }
     };
+    _.jshook = {
+        "click_hooks": {},
+        "add": function (hook_type, func) {
+            _.jshook["click_hooks"][hook_type] = func;
+        },
+        "init": function () {
+            _.addListener(document, 'click', function (e) {
+                e = e || window.event;
+                try {
+                    let hook_name = (e.target).getAttribute("data-click-hook");
+                    if (hook_name && _.jshook["click_hooks"][hook_name]) {
+                        _.jshook["click_hooks"][hook_name].apply(e.target);
+                        return false;
+                    }
+                } catch (ex) {
+                    console.log("unknown error"+ex);
+                }
+            }, false, true);
+        }
+    };
+
     return _;
 })();
 export default _pida;
