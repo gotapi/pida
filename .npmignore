@@ -1,0 +1,5 @@
+.idea
+.git
+*.min.js
+*.html
+*.tgz
