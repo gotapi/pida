@@ -67,7 +67,7 @@ const _pida = (function () {
             return;
         }
         if(obj instanceof chainable){
-            _.each(obj.wrapper,iterator,context);
+            _.each(obj.elements,iterator,context);
             return;
         }
         if (nativeForEach && obj.forEach === nativeForEach) {
@@ -120,7 +120,7 @@ const _pida = (function () {
         if (iterable.toArray) {
             return iterable.toArray();
         }
-        if (_.isArray(iterable)) {
+        if (_.isArray(iterable)) {``
             return slice.call(iterable);
         }
         if (_.isArguments(iterable)) {
@@ -372,9 +372,9 @@ const _pida = (function () {
         return currentContext;
     }
     class chainable{
-        wrapper=[];
+        elements=[];
         constructor(list) {
-            this.wrapper = list
+            this.elements = list
         }
         $(selector,root){
             return _.$(selector,root);
@@ -382,12 +382,12 @@ const _pida = (function () {
         html(data){
             if(arguments.length===0){
                 let results = []
-                for(let obj of this.wrapper){
+                for(let obj of this.elements){
                     results.push(obj.innerHTML);
                 }
                 return results.join("")
             }else{
-                for(let obj of this.wrapper){
+                for(let obj of this.elements){
                     obj.innerHTML = data;
                 }
             }
@@ -396,62 +396,74 @@ const _pida = (function () {
         text(data){
             if(arguments.length===0){
                 let results = []
-                for(let obj of this.wrapper){
+                for(let obj of this.elements){
                     results.push(obj.innerText);
                 }
                 return results.join("")
             }else{
-                for(let obj of this.wrapper){
+                for(let obj of this.elements){
                     obj.innerText = data;
                 }
             }
             return this;
         }
         hide(data){
-            for(let obj of this.wrapper){
+            for(let obj of this.elements){
                 obj.hidden = true;
             }
+            return this;
         }
         toggle(){
-            for(let obj of this.wrapper){
+            for(let obj of this.elements){
                 obj.hidden = !obj.hidden;
             }
+            return this;
         }
         show(){
-            for(let obj of this.wrapper){
+            for(let obj of this.elements){
                 obj.hidden = false;
             }
+            return this
         }
         *[Symbol.iterator]() {
-            for(let item of this.wrapper){
+            for(let item of this.elements){
                 yield new chainable([item]);
             }
         }
-        node(){
-            if(this.wrapper.length===1){
-               return this.wrapper[0];
-            }else {
-                return this.wrapper;
-            }
-        }
         on(event,callback){
-            for(let item of this.wrapper) {
+            for(let item of this.elements) {
                 _.addListener(item,event,callback);
             }
+            return this
         }
         val(data){
             if(arguments.length===0){
                 let results = []
-                for(let obj of this.wrapper){
+                for(let obj of this.elements){
                     results.push(obj.value);
                 }
                 return results.join("")
             }else{
-                for(let obj of this.wrapper){
+                for(let obj of this.elements){
                     obj.value = data;
                 }
             }
             return this;
+        }
+        addClass(klass){
+            for(let obj of this.elements){
+                obj.value.classList.add(klass)
+            }
+            return this;
+        }
+        removeClass(klass){
+            for(let obj of this.elements){
+                obj.value.classList.remove(klass)
+            }
+            return this;
+        }
+        each(callback,context){
+            _.each(this.elements,callback,context);
         }
     }
     _.$ = function (query,root) {
@@ -465,7 +477,7 @@ const _pida = (function () {
             return new chainable(getElementsBySelector.call(this,query));
         }
         if (root instanceof chainable) {
-            return new chainable(getElementsBySelector.call(this,query,root.wrapper));
+            return new chainable(getElementsBySelector.call(this,query,root.elements));
         } else {
             return new chainable(getElementsBySelector.call(this, query, root));
         }
