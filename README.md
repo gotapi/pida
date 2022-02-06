@@ -101,3 +101,10 @@ pida.$("p").removeClass("blue-text")
         console.log(evt.target.getAttribute("href"));
     });
 ```
+
+
+# chainable
+
+```javascript
+pida.$("a[href]").on("click",(evt)=>{ console.log(evt);}).addClass("blue").addClass("bigger")
+```
