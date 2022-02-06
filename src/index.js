@@ -66,6 +66,10 @@ const _pida = (function () {
         if (obj === null || obj === undefined) {
             return;
         }
+        if(obj instanceof chainable){
+            _.each(obj.wrapper,iterator,context);
+            return;
+        }
         if (nativeForEach && obj.forEach === nativeForEach) {
             obj.forEach(iterator, context);
         } else if (obj.length === +obj.length) {
@@ -206,7 +210,11 @@ const _pida = (function () {
     };
 
     function getAllChildren(e) {
-        return e.all ? e.all : e.getElementsByTagName('*');
+        if(e) {
+            return e.all ? e.all : e.getElementsByTagName('*');
+        }else{
+            return [];
+        }
     }
 
     let bad_whitespace = /[\t\r\n]/g;
@@ -216,13 +224,23 @@ const _pida = (function () {
         return ((' ' + elem.className + ' ').replace(bad_whitespace, ' ').indexOf(className) >= 0);
     }
 
-    function getElementsBySelector(selector) {
+    function getElementsBySelector(selector,root) {
         if (!window.document.getElementsByTagName) {
             return [];
         }
         let tokens = selector.split(' ');
         let token, bits, tagName, found, foundCount, i, j, k, elements, currentContextIndex;
-        let currentContext = [window.document];
+        let currentContext;
+        if(!root){
+            currentContext = [window.document];
+        }else{
+            if(_.isArray(root)) {
+                currentContext = root;
+            }else {
+                currentContext = [root];
+            }
+        }
+
         for (i = 0; i < tokens.length; i++) {
             token = tokens[i].replace(/^\s+/, '').replace(/\s+$/, '');
             if (token.indexOf('#') > -1) {
@@ -353,14 +371,103 @@ const _pida = (function () {
         }
         return currentContext;
     }
-
-    _.$ = function (query) {
+    class chainable{
+        wrapper=[];
+        constructor(list) {
+            this.wrapper = list
+        }
+        $(selector,root){
+            return _.$(selector,root);
+        }
+        html(data){
+            if(arguments.length===0){
+                let results = []
+                for(let obj of this.wrapper){
+                    results.push(obj.innerHTML);
+                }
+                return results.join("")
+            }else{
+                for(let obj of this.wrapper){
+                    obj.innerHTML = data;
+                }
+            }
+            return this;
+        }
+        text(data){
+            if(arguments.length===0){
+                let results = []
+                for(let obj of this.wrapper){
+                    results.push(obj.innerText);
+                }
+                return results.join("")
+            }else{
+                for(let obj of this.wrapper){
+                    obj.innerText = data;
+                }
+            }
+            return this;
+        }
+        hide(data){
+            for(let obj of this.wrapper){
+                obj.hidden = true;
+            }
+        }
+        toggle(){
+            for(let obj of this.wrapper){
+                obj.hidden = !obj.hidden;
+            }
+        }
+        show(){
+            for(let obj of this.wrapper){
+                obj.hidden = false;
+            }
+        }
+        *[Symbol.iterator]() {
+            for(let item of this.wrapper){
+                yield new chainable([item]);
+            }
+        }
+        node(){
+            if(this.wrapper.length===1){
+               return this.wrapper[0];
+            }else {
+                return this.wrapper;
+            }
+        }
+        on(event,callback){
+            for(let item of this.wrapper) {
+                _.addListener(item,event,callback);
+            }
+        }
+        val(data){
+            if(arguments.length===0){
+                let results = []
+                for(let obj of this.wrapper){
+                    results.push(obj.value);
+                }
+                return results.join("")
+            }else{
+                for(let obj of this.wrapper){
+                    obj.value = data;
+                }
+            }
+            return this;
+        }
+    }
+    _.$ = function (query,root) {
         if (_.isElement(query)) {
-            return [query];
-        } else if (_.isObject(query) && !_.isUndefined(query.length)) {
-            return query;
+            return new chainable([query]);
+        }
+        if (!_.isString(query)){
+            throw Error("query must be string or HTMLElement")
+        }
+        if(root===undefined){
+            return new chainable(getElementsBySelector.call(this,query));
+        }
+        if (root instanceof chainable) {
+            return new chainable(getElementsBySelector.call(this,query,root.wrapper));
         } else {
-            return getElementsBySelector.call(this, query);
+            return new chainable(getElementsBySelector.call(this, query, root));
         }
     };
     _.cookie = {
@@ -611,17 +718,18 @@ const _pida = (function () {
         }
     };
     _.jshook = {
-        "click_hooks": {},
+        "pida_hooks": {},
         "add": function (hook_type, func) {
-            _.jshook["click_hooks"][hook_type] = func;
+            _.jshook["pida_hooks"][hook_type] = func;
         },
         "init": function () {
-            _.addListener(document, 'click', function (e) {
+
+            _.addListener(document.body, 'click', function (e) {
                 e = e || window.event;
                 try {
-                    let hook_name = (e.target).getAttribute("data-click-hook");
-                    if (hook_name && _.jshook["click_hooks"][hook_name]) {
-                        _.jshook["click_hooks"][hook_name].apply(e.target);
+                    let hook_name = (e.target).getAttribute("data-pida-hook");
+                    if (hook_name && _.jshook["pida_hooks"][hook_name]) {
+                        _.jshook["pida_hooks"][hook_name].apply(e.target);
                         return false;
                     }
                 } catch (ex) {
@@ -630,7 +738,82 @@ const _pida = (function () {
             }, false, true);
         }
     };
+    const initXhr = (options,resolve,reject)=>{
+        if( !options){
+            options = {}
+        }
+        let xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+        xhr.withCredentials = options.withCredentials||false;
+        xhr.timeout = options.timeout || 10*1000;
 
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if( xhr.status === 200) {
+                    try {
+                        let json = JSON.parse(xhr.responseText);
+                        resolve && resolve.call(xhr, json)
+                    } catch (err) {
+                        resolve && resolve.call(err)
+                    }
+                }else{
+                    reject.call(xhr,"status not 200")
+                }
+            }
+        }
+
+        xhr.onerror = function(e){
+            reject.call(xhr,e);
+        }
+
+        if(options.on) {
+            for (let idx of ["abort", "load", "loaded", "loadstart", "progress", "timeout"]) {
+                if(options.on[idx]) {
+                    xhr["on"+idx] = options.on[idx];
+                }
+            }
+        }
+
+        return xhr;
+    }
+    _.post  = (url,options,data)=>{
+        console.log("try post data ")
+        console.log(data)
+        return new Promise((resolve,reject)=>{
+            let xhr = initXhr(options,resolve,reject);
+            xhr.open('POST',url);
+            if(options.headers){
+                _.each(options.headers,(item,name)=> {
+                    xhr.setRequestHeader(name,options.headers[name]);
+                });
+            }
+            let name = "Object"
+            try {
+                name = Object.prototype.toString.call(data).match(/\[object (.*?)\]/)[1]
+            }catch (e){
+
+            }
+            if("FormData"===name){
+                xhr.send(data)
+            }else{
+                xhr.send(JSON.stringify(data));
+            }
+
+        });
+    }
+    _.get = (url,options)=>{
+        return new Promise((resolve,reject)=>{
+            let xhr = initXhr(options,resolve,reject);
+            xhr.open('GET',url);
+            if(options.headers){
+                _.each(options.headers,(item,name)=> {
+
+                    xhr.setRequestHeader(name,options.headers[name]);
+                });
+            }
+            xhr.send()
+        });
+    }
+    _.chainable = chainable;
     return _;
 })();
 export default _pida;

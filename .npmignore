@@ -1,5 +1,10 @@
 .idea
+.DS_Store
 .git
 *.min.js
 *.html
 *.tgz
+src/
+yarn.lock
+*.php
+*.js
