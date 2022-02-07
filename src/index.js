@@ -804,7 +804,7 @@ const _pida = (function () {
             }catch (e){
 
             }
-            if("FormData"===name){
+            if(_.isString(data) || "FormData"===name){
                 xhr.send(data)
             }else{
                 xhr.send(JSON.stringify(data));

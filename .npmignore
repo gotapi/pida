@@ -8,3 +8,4 @@ src/
 yarn.lock
 *.php
 *.js
+*.sh

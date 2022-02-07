@@ -1,8 +1,13 @@
 import { defineConfig } from 'vite'
 // https://vitejs.dev/config/
 export default defineConfig({
-	optimizeDeps: {
-	  },
+  server:{
+    proxy:{
+      '/__/':'http://localhost:4998'
+    }
+  },
+  optimizeDeps: {
+    },
   plugins:[
 
   ],
