@@ -357,6 +357,17 @@ const _pida = function() {
     $(selector, root) {
       return _.$(selector, root);
     }
+    attr(k, v) {
+      if (arguments.length > 1) {
+        for (let obj of this.elements) {
+          obj.setAttribute(k, v);
+        }
+      } else {
+        for (let obj of this.elements) {
+          return obj.getAttribute(k);
+        }
+      }
+    }
     html(data) {
       if (arguments.length === 0) {
         let results = [];
@@ -388,18 +399,29 @@ const _pida = function() {
     hide(data) {
       for (let obj of this.elements) {
         obj.hidden = true;
+        if (obj.style.display) {
+          obj.setAttribute("data-old-display", obj.style.display);
+          obj.style.display = "none";
+        }
       }
       return this;
     }
     toggle() {
       for (let obj of this.elements) {
-        obj.hidden = !obj.hidden;
+        if (obj.hidden) {
+          $(obj).show();
+        } else {
+          $(obj).hide();
+        }
       }
       return this;
     }
     show() {
       for (let obj of this.elements) {
         obj.hidden = false;
+        if (obj.getAttribute("data-old-display")) {
+          obj.style.display = obj.getAttribute("data-old-display");
+        }
       }
       return this;
     }

@@ -31,11 +31,6 @@ pida.onDomReady(()=>{
 
 vite demo project:[https://github.com/gotapi/pida-demo](https://github.com/gotapi/pida-demo)
 
-Pida 一个极简的类似Jquery的Javascript库
-因为Jquery现在已经膨胀到了100K了，有时候做一些特别小的页面，实在没有必要引入这么大一个库，于是我就写了这个pida;
-嗯 ，代码是东拼西凑的，也只做了chrome下的测试。
-不建议在重要的项目中使用。
-
 
 # ajax get request
 
@@ -57,6 +52,7 @@ pida.get("https://ip4.dev/myip?format=json",{
 });
 ```
 # ajax post request
+
 ```javascript
 let data = new FormData()
 data.append("title","hello")
@@ -75,6 +71,20 @@ pida.post("https://example.org/",{
 });
 ```
 
+## example for post x-www-form-urlencoded data:
+```javascript
+let formSend = "type=json&url=" + encodeURIComponent(location.href) + "&content=" + encodeURIComponent("Hellobaby");
+
+pida.post("https://gotapi.net/v3/api/text2pic", {
+    "timeout": 15000,
+    "headers": {
+        "secret": secret,
+        "Content-Type": "application/x-www-form-urlencoded"
+   }
+},
+formSend).then((data) => {});
+```
+
 # hide/show/toggle
 
 ```javascript
@@ -84,6 +94,14 @@ pida.$("a[href]").toggle()
 # html/val/text
 ```javascript
 pida.$("p").html("same text")
+
+```
+
+# attr
+```javascript
+//when you try to getAttributes,return the first
+pida.$("input").attr("value")
+pida.$("href").attr("link","/index")
 ```
 
 # addClass/removeClass

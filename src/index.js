@@ -379,6 +379,17 @@ const _pida = (function () {
         $(selector,root){
             return _.$(selector,root);
         }
+        attr(k,v){
+            if(arguments.length>1){
+                for(let obj of this.elements){
+                    obj.setAttribute(k,v);
+                }
+            }else{
+                for(let obj of this.elements){
+                   return  obj.getAttribute(k);
+                }
+            }
+        }
         html(data){
             if(arguments.length===0){
                 let results = []
