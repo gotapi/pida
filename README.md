@@ -1,8 +1,12 @@
-Pida 
+# Pida 
 
-a very small Jquery like javascript library.
+Terribly small javascript library ,up to 5k (gziped)
 
-Installation:
+- Chrome or other supported:( no IE )
+- Browser side only,not for node.js
+ 
+
+## Installation:
 ```shell
 yarn add pida
 ```
@@ -13,7 +17,7 @@ npm install --save pida
 
 
 
-Example:
+# Example of document query
 
 ```javascript
 import  pida from  'pida'
@@ -31,13 +35,9 @@ pida.onDomReady(()=>{
 
 vite demo project:[https://github.com/gotapi/pida-demo](https://github.com/gotapi/pida-demo)
 
-Pida 一个极简的类似Jquery的Javascript库
-因为Jquery现在已经膨胀到了100K了，有时候做一些特别小的页面，实在没有必要引入这么大一个库，于是我就写了这个pida;
-嗯 ，代码是东拼西凑的，也只做了chrome下的测试。
-不建议在重要的项目中使用。
 
 
-# ajax get request
+## ajax get request
 
 ```javascript
 pida.get("https://ip4.dev/myip?format=json",{
@@ -56,7 +56,7 @@ pida.get("https://ip4.dev/myip?format=json",{
     console.log(err);
 });
 ```
-# ajax post request
+## ajax post request
 ```javascript
 let data = new FormData()
 data.append("title","hello")
@@ -75,25 +75,25 @@ pida.post("https://example.org/",{
 });
 ```
 
-# hide/show/toggle
+## hide/show/toggle
 
 ```javascript
 pida.$("a[href]").toggle()
 ```
 
-# html/val/text
+## html/val/text
 ```javascript
 pida.$("p").html("same text")
 ```
 
-# addClass/removeClass
+## addClass/removeClass
 
 ```javascript
 pida.$("p").addClass("bigger")
 pida.$("p").removeClass("blue-text")
 ```
 
-# usage of event binding
+## usage of event binding
 
 ```javascript
     pida.$("a[href]").on("click", (evt) => {
@@ -103,8 +103,18 @@ pida.$("p").removeClass("blue-text")
 ```
 
 
-# chainable
+## chainable
 
 ```javascript
 pida.$("a[href]").on("click",(evt)=>{ console.log(evt);}).addClass("blue").addClass("bigger")
+```
+
+## other helpers 
+```javascript
+pida.each(iter,(element)=>{
+
+})
+pida.isArray()
+pida.isObject()
+pida.isString()
 ```
