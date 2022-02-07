@@ -1,8 +1,12 @@
-Pida 
+# Pida 
 
-a very small Jquery like javascript library.
+Terribly small javascript library ,up to 5k (gziped)
 
-Installation:
+- Chrome or other supported:( no IE )
+- Browser side only,not for node.js
+ 
+
+## Installation:
 ```shell
 yarn add pida
 ```
@@ -13,7 +17,7 @@ npm install --save pida
 
 
 
-Example:
+# Example of document query
 
 ```javascript
 import  pida from  'pida'
@@ -31,8 +35,7 @@ pida.onDomReady(()=>{
 
 vite demo project:[https://github.com/gotapi/pida-demo](https://github.com/gotapi/pida-demo)
 
-
-# ajax get request
+## ajax get request
 
 ```javascript
 pida.get("https://ip4.dev/myip?format=json",{
@@ -51,7 +54,8 @@ pida.get("https://ip4.dev/myip?format=json",{
     console.log(err);
 });
 ```
-# ajax post request
+
+## ajax post request
 
 ```javascript
 let data = new FormData()
@@ -87,11 +91,13 @@ formSend).then((data) => {});
 
 # hide/show/toggle
 
+
+
 ```javascript
 pida.$("a[href]").toggle()
 ```
 
-# html/val/text
+## html/val/text
 ```javascript
 pida.$("p").html("same text")
 
@@ -104,14 +110,14 @@ pida.$("input").attr("value")
 pida.$("href").attr("link","/index")
 ```
 
-# addClass/removeClass
+## addClass/removeClass
 
 ```javascript
 pida.$("p").addClass("bigger")
 pida.$("p").removeClass("blue-text")
 ```
 
-# usage of event binding
+## usage of event binding
 
 ```javascript
     pida.$("a[href]").on("click", (evt) => {
@@ -121,8 +127,18 @@ pida.$("p").removeClass("blue-text")
 ```
 
 
-# chainable
+## chainable
 
 ```javascript
 pida.$("a[href]").on("click",(evt)=>{ console.log(evt);}).addClass("blue").addClass("bigger")
+```
+
+## other helpers 
+```javascript
+pida.each(iter,(element)=>{
+
+})
+pida.isArray()
+pida.isObject()
+pida.isString()
 ```

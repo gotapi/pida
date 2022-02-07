@@ -1,7 +1,7 @@
 {
   "name": "pida",
   "version": "1.0.10",
-  "description": "a tiny library like jQuery 一个很小的jquery类似的库，用了类似的查询语法",
+  "description": "a tiny library like jQuery 一个很小的jquery类似的库，用了jquery类似的查询语法",
   "main": "dist/pida.es.js",
   "type": "module",
   "scripts": {
@@ -14,10 +14,13 @@
     "url": "git+ssh://git@github.com/gotapi/pida.git"
   },
   "keywords": [
-    "picojs",
+    "pida",
+    "pidajs",
     "js",
     "javascript",
-    "simple"
+    "simple",
+    "jquery",
+    "tiny"
   ],
   "author": "ms404",
   "license": "MIT",
@@ -29,21 +32,5 @@
     "vite": "^2.7.2"
   },
   "dependencies": {
-    "@picocss/pico": "^1.4.4",
-    "animate.less": "^2.2.0",
-    "autoprefixer": "^10.4.2",
-    "autosize": "^5.0.1",
-    "axios": "^0.25.0",
-    "clipboard": "^2.0.10",
-    "good-listener": "^1.2.2",
-    "pida": "^1.0.7",
-    "postcss": "^8.4.5",
-    "postcss-flexbugs-fixes": "^5.0.2",
-    "postcss-modules": "^4.3.0",
-    "qs": "^6.10.3",
-    "rollup-plugin-terser": "^7.0.2",
-    "sass": "^1.49.0",
-    "storejs": "^2.0.1",
-    "xss": "^1.0.10"
   }
 }
