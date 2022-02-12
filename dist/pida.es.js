@@ -370,11 +370,9 @@ const _pida = function() {
     }
     html(data) {
       if (arguments.length === 0) {
-        let results = [];
         for (let obj of this.elements) {
-          results.push(obj.innerHTML);
+          return obj.innerHTML;
         }
-        return results.join("");
       } else {
         for (let obj of this.elements) {
           obj.innerHTML = data;
@@ -384,11 +382,9 @@ const _pida = function() {
     }
     text(data) {
       if (arguments.length === 0) {
-        let results = [];
         for (let obj of this.elements) {
-          results.push(obj.innerText);
+          return obj.innerText;
         }
-        return results.join("");
       } else {
         for (let obj of this.elements) {
           obj.innerText = data;
@@ -438,11 +434,9 @@ const _pida = function() {
     }
     val(data) {
       if (arguments.length === 0) {
-        let results = [];
         for (let obj of this.elements) {
-          results.push(obj.value);
+          return obj.value;
         }
-        return results.join("");
       } else {
         for (let obj of this.elements) {
           obj.value = data;
