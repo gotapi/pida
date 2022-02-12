@@ -468,13 +468,13 @@ const _pida = (function () {
         }
         addClass(klass){
             for(let obj of this.elements){
-                obj.value.classList.add(klass)
+                obj.classList.add(klass)
             }
             return this;
         }
         removeClass(klass){
             for(let obj of this.elements){
-                obj.value.classList.remove(klass)
+                obj.classList.remove(klass)
             }
             return this;
         }
