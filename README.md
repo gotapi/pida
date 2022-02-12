@@ -142,3 +142,10 @@ pida.isArray()
 pida.isObject()
 pida.isString()
 ```
+
+
+## change log
+
+### 1.0.13
+The behavior of html/val/attr/text is unified. When there are multiple hit objects, only the first html/val/attr/text attribute is returned.
+统一了html/val/attr/text的行为，当命中对象有多个时，只返回第一个的html/val/attr/text属性。
