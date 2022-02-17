@@ -1,5 +1,5 @@
 'use strict';
-const _pida = (function () {
+export default (function () {
     let ObjProto = Object.prototype;
     let ArrayProto = Array.prototype;
     let toString = ObjProto.toString;
@@ -16,9 +16,6 @@ const _pida = (function () {
     let nativeIndexOf = ArrayProto.indexOf;
     let breaker = {};
     const _ = {
-        trim: function (str) {
-            return str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-        }
     };
     _.isElement = function (obj) {
         return !!(obj && obj.nodeType === 1);
@@ -43,7 +40,7 @@ const _pida = (function () {
             if (!(this instanceof bound)) {
                 return func.apply(context, args.concat(slice.call(arguments)));
             }
-            let ctor = {};
+            let ctor = function (){};
             ctor.prototype = func.prototype;
             let self = new ctor();
             ctor.prototype = null;
@@ -66,13 +63,15 @@ const _pida = (function () {
         if (obj === null || obj === undefined) {
             return;
         }
-        if(obj instanceof chainable){
+        if(obj instanceof Chainable){
             _.each(obj.elements,iterator,context);
             return;
         }
         if (nativeForEach && obj.forEach === nativeForEach) {
             obj.forEach(iterator, context);
-        } else if (obj.length === +obj.length) {
+            return;
+        }
+        if (obj.length === +obj.length) {
             for (let i = 0, l = obj.length; i < l; i++) {
                 if (i in obj && iterator.call(context, obj[i], i, obj) === breaker) {
                     return;
@@ -120,7 +119,7 @@ const _pida = (function () {
         if (iterable.toArray) {
             return iterable.toArray();
         }
-        if (_.isArray(iterable)) {``
+        if (_.isArray(iterable)) {
             return slice.call(iterable);
         }
         if (_.isArguments(iterable)) {
@@ -310,8 +309,6 @@ const _pida = (function () {
                         found[foundCount++] = elements[k];
                     }
                 }
-                currentContext = [];
-                currentContextIndex = 0;
                 let checkFunction; // This function will be used to filter the elements
                 switch (attrOperator) {
                     case '=': // Equality
@@ -371,7 +368,7 @@ const _pida = (function () {
         }
         return currentContext;
     }
-    class chainable{
+    class Chainable{
         elements=[];
         constructor(list) {
             this.elements = list
@@ -445,7 +442,7 @@ const _pida = (function () {
         }
         *[Symbol.iterator]() {
             for(let item of this.elements){
-                yield new chainable([item]);
+                yield new Chainable([item]);
             }
         }
         on(event,callback){
@@ -484,57 +481,19 @@ const _pida = (function () {
     }
     _.$ = function (query,root) {
         if (_.isElement(query)) {
-            return new chainable([query]);
+            return new Chainable([query]);
         }
         if (!_.isString(query)){
             throw Error("query must be string or HTMLElement")
         }
         if(root===undefined){
-            return new chainable(getElementsBySelector.call(this,query));
+            return new Chainable(getElementsBySelector.call(this,query));
         }
-        if (root instanceof chainable) {
-            return new chainable(getElementsBySelector.call(this,query,root.elements));
+        if (root instanceof Chainable) {
+            return new Chainable(getElementsBySelector.call(this,query,root.elements));
         } else {
-            return new chainable(getElementsBySelector.call(this, query, root));
+            return new Chainable(getElementsBySelector.call(this, query, root));
         }
-    };
-    _.cookie = {
-        get: function (name) {
-            let nameEQ = name + '=';
-            let ca = document$1.cookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') {
-                    c = c.substring(1, c.length);
-                }
-                if (c.indexOf(nameEQ) === 0) {
-                    return decodeURIComponent(c.substring(nameEQ.length, c.length));
-                }
-            }
-            return null;
-        },
-        set: function (name, value, days, cross_subdomain, is_secure) {
-            let cdomain = '', expires = '', secure = '';
-            if (cross_subdomain) {
-                let matches = document$1.location.hostname.match(/[a-z0-9][a-z0-9\-]+\.[a-z\.]{2,6}$/i),
-                    domain = matches ? matches[0] : '';
-                cdomain = ((domain) ? '; domain=.' + domain : '');
-            }
-            if (days) {
-                let date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = '; expires=' + date.toGMTString();
-            }
-
-            if (is_secure) {
-                secure = '; secure';
-            }
-            let new_cookie_val = name + '=' + encodeURIComponent(value) + expires + '; path=/' + cdomain + secure;
-            document$1.cookie = new_cookie_val;
-            return new_cookie_val;
-        }
-
-
     };
 
     _.info = {
@@ -545,43 +504,57 @@ const _pida = (function () {
                     return 'Opera Mini';
                 }
                 return 'Opera';
-            } else if (/(BlackBerry|PlayBook|BB10)/i.test(user_agent)) {
+            }
+            if (/(BlackBerry|PlayBook|BB10)/i.test(user_agent)) {
                 return 'BlackBerry';
-            } else if (_.includes(user_agent, 'IEMobile') || _.includes(user_agent, 'WPDesktop')) {
+            }
+            if (_.includes(user_agent, 'IEMobile') || _.includes(user_agent, 'WPDesktop')) {
                 return 'Internet Explorer Mobile';
-            } else if (_.includes(user_agent, 'Edge')) {
+            }
+            if (_.includes(user_agent, 'Edge')) {
                 return 'Microsoft Edge';
-            } else if (_.includes(user_agent, 'FBIOS')) {
+            }
+            if (_.includes(user_agent, 'FBIOS')) {
                 return 'Facebook Mobile';
-            } else if (_.includes(user_agent, 'Chrome')) {
+            }
+            if (_.includes(user_agent, 'Chrome')) {
                 return 'Chrome';
-            } else if (_.includes(user_agent, 'CriOS')) {
+            }
+            if (_.includes(user_agent, 'CriOS')) {
                 return 'Chrome iOS';
-            } else if (_.includes(user_agent, 'UCWEB') || _.includes(user_agent, 'UCBrowser')) {
+            }
+            if (_.includes(user_agent, 'UCWEB') || _.includes(user_agent, 'UCBrowser')) {
                 return 'UC Browser';
-            } else if (_.includes(user_agent, 'FxiOS')) {
+            }
+            if (_.includes(user_agent, 'FxiOS')) {
                 return 'Firefox iOS';
-            } else if (_.includes(vendor, 'Apple')) {
+            }
+            if (_.includes(vendor, 'Apple')) {
                 if (_.includes(user_agent, 'Mobile')) {
                     return 'Mobile Safari';
                 }
                 return 'Safari';
-            } else if (_.includes(user_agent, 'Android')) {
+            }
+            if (_.includes(user_agent, 'Android')) {
                 return 'Android Mobile';
-            } else if (_.includes(user_agent, 'Konqueror')) {
+            }
+            if (_.includes(user_agent, 'Konqueror')) {
                 return 'Konqueror';
-            } else if (_.includes(user_agent, 'Firefox')) {
+            }
+            if (_.includes(user_agent, 'Firefox')) {
                 return 'Firefox';
-            } else if (_.includes(user_agent, 'MSIE') || _.includes(user_agent, 'Trident/')) {
+            }
+            if (_.includes(user_agent, 'MSIE') || _.includes(user_agent, 'Trident/')) {
                 return 'Internet Explorer';
-            } else if (_.includes(user_agent, 'Gecko')) {
+            }
+            if (_.includes(user_agent, 'Gecko')) {
                 return 'Mozilla';
             } else {
                 return '';
             }
         },
-        browserVersion: function (userAgent, vendor, opera) {
-            let browser = _.info.browser(userAgent, vendor, opera);
+        browserVersion: function (agent, vendor, opera) {
+            let browser = _.info.browser(agent, vendor, opera);
             let versionRegexs = {
                 'Internet Explorer Mobile': /rv:(\d+(\.\d+)?)/,
                 'Microsoft Edge': /Edge\/(\d+(\.\d+)?)/,
@@ -603,7 +576,7 @@ const _pida = (function () {
             if (regex === undefined) {
                 return null;
             }
-            let matches = userAgent.match(regex);
+            let matches = agent.match(regex);
             if (!matches) {
                 return null;
             }
@@ -617,15 +590,20 @@ const _pida = (function () {
                     return 'Windows Phone';
                 }
                 return 'Windows';
-            } else if (/(iPhone|iPad|iPod)/.test(a)) {
+            }
+            if (/(iPhone|iPad|iPod)/.test(a)) {
                 return 'iOS';
-            } else if (/Android/.test(a)) {
+            }
+            if (/Android/.test(a)) {
                 return 'Android';
-            } else if (/(BlackBerry|PlayBook|BB10)/i.test(a)) {
+            }
+            if (/(BlackBerry|PlayBook|BB10)/i.test(a)) {
                 return 'BlackBerry';
-            } else if (/Mac/i.test(a)) {
+            }
+            if (/Mac/i.test(a)) {
                 return 'Mac OS X';
-            } else if (/Linux/.test(a)) {
+            }
+            if (/Linux/.test(a)) {
                 return 'Linux';
             } else {
                 return '';
@@ -639,26 +617,24 @@ const _pida = (function () {
             }
             return '';
         },
-
         properties: function () {
             let ref = document$1.referrer;
-            if (ref.length > 255) {
-                ref = ref.substring(0, 255);
-            }
             return _.extend(_.strip_empty_properties({
                 'os': _.info.os(),
                 'browser': _.info.browser(userAgent, navigator$1.vendor, window.opera),
                 'referrer': ref,
             }), {
-                'current_url': window.location.href,
                 'browser_version': _.info.browserVersion(userAgent, navigator$1.vendor, window.opera)
             });
         }
     };
+    _.os = _.info.properties()["os"];
+    _.browser = _.info.properties()["browser"];
+    _.browserVersion = _.info.properties()["browser_version"]
     _.addListener = (function () {
         let register_single_event = function (element, type, handler, oldSchool, useCapture) {
             if (!element) {
-                console$1.error('No valid element provided to register_single_event');
+                console.error('No valid element provided to register_single_event');
                 return;
             }
             if (element.addEventListener && !oldSchool) {
@@ -731,7 +707,6 @@ const _pida = (function () {
         if (ie) {
             (function () {
                 try {
-                    d.documentElement.doScroll('left');
                     run();
                 } catch (err) {
                     setTimeout(arguments.callee, 10);
@@ -739,8 +714,10 @@ const _pida = (function () {
             })();
         } else if (wk) {
             let t = setInterval(function () {
-                if (/^(loaded|complete)$/.test(d.readyState))
-                    clearInterval(t), run();
+                if (/^(loaded|complete)$/.test(d.readyState)) {
+                    clearInterval(t);
+                    run();
+                }
             }, 10);
         }
     };
@@ -750,7 +727,6 @@ const _pida = (function () {
             _.jshook["pida_hooks"][hook_type] = func;
         },
         "init": function () {
-
             _.addListener(document.body, 'click', function (e) {
                 e = e || window.event;
                 try {
@@ -772,7 +748,6 @@ const _pida = (function () {
         let xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
         xhr.withCredentials = options.withCredentials||false;
         xhr.timeout = options.timeout || 10*1000;
-
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if( xhr.status === 200) {
@@ -787,11 +762,9 @@ const _pida = (function () {
                 }
             }
         }
-
         xhr.onerror = function(e){
             reject.call(xhr,e);
         }
-
         if(options.on) {
             for (let idx of ["abort", "load", "loaded", "loadstart", "progress", "timeout"]) {
                 if(options.on[idx]) {
@@ -803,8 +776,6 @@ const _pida = (function () {
         return xhr;
     }
     _.post  = (url,options,data)=>{
-        console.log("try post data ")
-        console.log(data)
         return new Promise((resolve,reject)=>{
             let xhr = initXhr(options,resolve,reject);
             xhr.open('POST',url);
@@ -827,6 +798,17 @@ const _pida = (function () {
 
         });
     }
+    _.helpers= {
+        form:"application/x-www-form-urlencoded"
+    }
+    _.formPost = (url,options,data)=>{
+        _.extend(options,{
+            "headers":{
+                "Content-Type":_.helpers.form+";charset=UTF-8"
+            }
+        })
+        return _.post(url,options,data);
+    }
     _.get = (url,options)=>{
         return new Promise((resolve,reject)=>{
             let xhr = initXhr(options,resolve,reject);
@@ -840,7 +822,7 @@ const _pida = (function () {
             xhr.send()
         });
     }
-    _.chainable = chainable;
+    _.chainable = Chainable;
+
     return _;
 })();
-export default _pida;

@@ -141,10 +141,16 @@ pida.each(iter,(element)=>{
 pida.isArray()
 pida.isObject()
 pida.isString()
+console.log(pida.os) //Windows or iOS  or Android etc.
+console.log(pida.browser) //Chrome or  Opera or Microsoft Edge or Firefox etc
 ```
 
 
 ## change log
+### 1.0.15
+1. 一些bug修复. some bugfixs
+2. 文档更新.document updated;
+3. 优化代码，以让pida在sonarqube上的等级变为A级。code optimized to pass sonar-scanner.
 
 ### 1.0.14
 
