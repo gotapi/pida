@@ -758,12 +758,12 @@ export default (function () {
                         resolve && resolve.call(err)
                     }
                 }else{
-                    reject.call(xhr,"status not 200")
+                    reject.call(xhr,xhr,"status not 200")
                 }
             }
         }
         xhr.onerror = function(e){
-            reject.call(xhr,e);
+            reject.call(xhr,xhr,e);
         }
         if(options.on) {
             for (let idx of ["abort", "load", "loaded", "loadstart", "progress", "timeout"]) {

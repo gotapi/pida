@@ -1,6 +1,6 @@
 {
   "name": "pida",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "tiny library like jQuery without any dependencies 一个很小的jquery类似的库，用了jquery类似的查询语法,没有依赖",
   "main": "dist/pida.es.js",
   "type": "module",

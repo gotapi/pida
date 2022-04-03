@@ -147,6 +147,9 @@ console.log(pida.browser) //Chrome or  Opera or Microsoft Edge or Firefox etc
 
 
 ## change log
+
+### 1.0.16
+在提交get/post等ajax请求时，把xhr作为参数传进去了。
 ### 1.0.15
 1. 一些bug修复. some bugfixs
 2. 文档更新.document updated;
